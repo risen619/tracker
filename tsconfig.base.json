@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@tracker/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@tracker/api-interfaces": ["libs/api-interfaces/src/index.ts"],
+      "@tracker/models": ["libs/models/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

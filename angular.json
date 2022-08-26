@@ -4,6 +4,7 @@
   "projects": {
     "api": "apps/api",
     "api-interfaces": "libs/api-interfaces",
+    "models": "libs/models",
     "tracker": "apps/tracker",
     "tracker-e2e": "apps/tracker-e2e"
   }
