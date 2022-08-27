@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, Session, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 
 import { Public } from '../../decorators';
@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { User } from '../../schemas/user/user.schema';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
+import { SessionData } from 'express-session';
 
 @Controller('auth')
 export class AuthController
@@ -33,6 +34,12 @@ export class AuthController
     @Post('login')
     login() { }
 
+    @Delete('logout')
+    logout(@Req() request: Request)
+    {
+        request.session.destroy(console.log);
+    }
+
     @Public()
     @Post('register')
     register(@Body() body: RegisterDTO)
@@ -42,8 +49,13 @@ export class AuthController
 
     @Public()
     @Post('reset-password')
-    resetPassword(@Body() body: ResetPasswordDTO)
+    async resetPassword(@Req() request: Request, @Body() body: ResetPasswordDTO)
     {
-        return this.service.resetPassword(body);
+        const res = await this.service.resetPassword(body);
+
+        if (request.session?.destroy)
+            request.session.destroy(console.log);
+
+        return res;
     }
 }

@@ -72,6 +72,7 @@ export class AuthService
 
         const passwordHash = await bcrypt.hash(dto.password, this.config.get('auth.rounds', { infer: true }));
         await this.userModel.updateOne({ _id: token.user }, { $set: { passwordHash } });
+        await this.sessionModel.deleteMany({ 'session.passport.user.id': token.user.toString() });
     }
 
     async validateUser(email: string, password: string)
