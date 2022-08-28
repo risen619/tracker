@@ -3,7 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 
 import { SchemasModule } from '../../schemas/schemas.module';
-import { UserModule } from '../user/user.module';
+import { UsersModule } from '../users/users.module';
 
 import { AuthController } from './auth.controller';
 import { AuthSerializer } from './auth.serializer';
@@ -17,7 +17,7 @@ import { SessionGuard } from './session.guard';
         PassportModule.register({ session: true }),
 
         SchemasModule,
-        UserModule,
+        UsersModule,
     ],
     controllers: [AuthController],
     providers: [

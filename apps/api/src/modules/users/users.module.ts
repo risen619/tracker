@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 
 import { SchemasModule } from '../../schemas/schemas.module';
 
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 
 @Module({
     imports: [SchemasModule],
-    providers: [UserService],
-    exports: [UserService]
+    providers: [UsersService],
+    exports: [UsersService]
 })
-export class UserModule { }
+export class UsersModule { }

@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { IConfig } from '../../config/configuration';
 import { User, USER_SCHEMA_NAME } from '../../schemas/user/user.schema';
 import { Session, SESSION_SCHEMA_NAME } from '../../schemas/session/session.schema';
-import { UserService } from '../user/user.service';
+import { UsersService } from '../users/users.service';
 
 import { RegisterDTO } from './dto';
 import { ResetPasswordToken, RESET_PASSWORD_TOKEN_SCHEMA_NAME } from '../../schemas/token';
@@ -24,9 +24,19 @@ export class AuthService
         @InjectModel(SESSION_SCHEMA_NAME) private sessionModel: Model<Session>,
         @InjectModel(USER_SCHEMA_NAME) private userModel: Model<User>,
 
-        private userService: UserService
+        private userService: UsersService
     )
     { }
+
+    async deleteSessions(user: User, currentSessionId: string)
+    {
+        return this.sessionModel.deleteMany({
+            $and: [
+                { 'session.passport.user.id': user._id.toString() },
+                { _id: { $ne: currentSessionId } }
+            ]
+        });
+    }
 
     async forgotPassword(email: string)
     {

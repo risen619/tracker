@@ -8,8 +8,9 @@ import MongoStore = require('connect-mongo');
 
 import { configuration, IConfig } from './config/configuration';
 import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
+import { UsersModule } from './modules/users/users.module';
 import { SESSION_COLLECTION_NAME } from './schemas/session/session.schema';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 function buildMongoUri(host: string, port: number, name: string)
 {
@@ -32,7 +33,8 @@ function buildMongoUri(host: string, port: number, name: string)
         }),
 
         AuthModule,
-        UserModule,
+        UsersModule,
+        ProjectsModule,
     ],
 })
 export class AppModule implements NestModule
@@ -40,8 +42,7 @@ export class AppModule implements NestModule
     constructor(
         @InjectConnection() private connection: Connection,
         private config: ConfigService<IConfig>
-    )
-    { }
+    ) { }
 
     configure(consumer: MiddlewareConsumer)
     {
@@ -55,18 +56,17 @@ export class AppModule implements NestModule
                     cookie: {
                         maxAge: 1000 * 60 * 60 * 24 * 14,
                         secure: false,
-                        httpOnly: false
+                        httpOnly: false,
                     },
                     store: MongoStore.create({
                         client: this.connection.getClient(),
                         collectionName: SESSION_COLLECTION_NAME,
-                        stringify: false
-                    })
+                        stringify: false,
+                    }),
                 }),
                 passport.initialize(),
                 passport.session()
             )
             .forRoutes('*');
     }
-
 }

@@ -1,19 +1,23 @@
-import { Body, Controller, Delete, Get, Post, Req, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 
 import { Public } from '../../decorators';
-
-import { ForgotPasswordDTO, RegisterDTO } from './dto';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
 import { User } from '../../schemas/user/user.schema';
-import { ResetPasswordDTO } from './dto/reset-password.dto';
-import { SessionData } from 'express-session';
+
+import { AuthService } from './auth.service';
+import { ForgotPasswordDTO, RegisterDTO, ResetPasswordDTO } from './dto';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth')
 export class AuthController
 {
     constructor(private service: AuthService) { }
+
+    @Delete('sessions')
+    deleteSessions(@Req() request: Request)
+    {
+        this.service.deleteSessions(request.user as User, request.sessionID);
+    }
 
     @Public()
     @Post('forgot-password')
