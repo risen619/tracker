@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 
 import { CreateProjectDTO } from './dto';
 import { ProjectsService } from './projects.service';
 
-@Controller('projects')
+@Controller()
 export class ProjectsController
 {
     constructor(private service: ProjectsService) { }
@@ -13,6 +13,13 @@ export class ProjectsController
     create(@Body() body: CreateProjectDTO, @Req() request: Request)
     {
         return this.service.create(body, request.user);
+    }
+
+    @Delete(':id')
+    delete(@Param('id') id: string)
+    {
+        return this.service.delete(id)
+            .then(() => {});
     }
 
     @Get()

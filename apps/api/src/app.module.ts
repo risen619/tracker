@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RouterModule, Routes } from '@nestjs/core';
 import { InjectConnection, MongooseModule } from '@nestjs/mongoose';
+
 import * as session from 'express-session';
 import { Connection } from 'mongoose';
 import * as passport from 'passport';
@@ -11,11 +13,25 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { SESSION_COLLECTION_NAME } from './schemas/session/session.schema';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { ApiKeysModule } from './modules/projects/api-keys/api-keys.module';
 
 function buildMongoUri(host: string, port: number, name: string)
 {
     return `mongodb://${host}:${port}/${name}`;
 }
+
+const routes: Routes = [
+    {
+        path: 'projects',
+        module: ProjectsModule,
+        children: [
+            {
+                path: ':projectId/api-keys',
+                module: ApiKeysModule
+            }
+        ]
+    }
+];
 
 @Module({
     imports: [
@@ -31,6 +47,7 @@ function buildMongoUri(host: string, port: number, name: string)
                 return { uri: buildMongoUri(host, port, name) };
             },
         }),
+        RouterModule.register(routes),
 
         AuthModule,
         UsersModule,
