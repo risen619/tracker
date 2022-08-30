@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
 
 import { IUserModel } from '@tracker/models';
 
@@ -19,3 +19,4 @@ export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
 export const USER_SCHEMA_NAME = 'User';
 export const USER_COLLECTION_NAME = 'users';
+export interface UserModel extends Model<User> { }

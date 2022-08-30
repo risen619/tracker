@@ -1,7 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { Document, Model, Types } from "mongoose";
+import * as crypto from 'crypto';
 
-import { USER_SCHEMA_NAME } from "../user/user.schema";
+import { PROJECT_SCHEMA_NAME } from "../project";
+
+import { TOKEN_LENGTH } from "./contants";
 
 @Schema()
 export class InviteToProjectToken
@@ -9,8 +12,8 @@ export class InviteToProjectToken
     @Prop({ required: true })
     email: string;
 
-    @Prop({ required: true, ref: USER_SCHEMA_NAME })
-    issuer: Types.ObjectId;
+    @Prop({ required: true, ref: PROJECT_SCHEMA_NAME })
+    project: Types.ObjectId;
 
     expires: Date;
     kind: string;
@@ -20,3 +23,12 @@ export class InviteToProjectToken
 
 export type InviteToProjectTokenDocument = InviteToProjectToken & Document;
 export const InviteToProjectTokenSchema = SchemaFactory.createForClass(InviteToProjectToken);
+export interface InviteToProjectTokenModel extends Model<InviteToProjectToken>
+{
+    generateToken(): string;
+}
+
+InviteToProjectTokenSchema.statics.generateToken = function()
+{
+    return crypto.randomBytes(TOKEN_LENGTH).toString('hex');
+}
